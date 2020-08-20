@@ -1,4 +1,4 @@
-// dear imgui: standalone example application for GLFW + OpenGL2, using legacy fixed pipeline
+// dear imgui: standalone example application for GLFW + OpenGL3, using legacy fixed pipeline
 // If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
 // (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
 
@@ -9,11 +9,12 @@
 #include "vtk.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl2.h"
+#include "imgui_impl_opengl3.h"
 #include <stdio.h>
 #include <GLFW/glfw3.h>
+#include <memory>
 
-MyVTKRenderer * myvtk = nullptr;
+std::shared_ptr<MyVTKRenderer> myvtk = nullptr;
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma. 
@@ -56,7 +57,7 @@ void glfw_mouse_button(GLFWwindow* window, int button, int action, int mods)
 
 int main(int, char**)
 {
-	myvtk = new MyVTKRenderer;
+	myvtk = std::make_shared<MyVTKRenderer>();
 
 	int display_w = 800;
 	int display_h = 600;
@@ -65,7 +66,7 @@ int main(int, char**)
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
-    GLFWwindow* window = glfwCreateWindow(display_w, display_h, "Dear ImGui GLFW+OpenGL2 example", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(display_w, display_h, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
     if (window == NULL)
         return 1;
 
@@ -87,7 +88,7 @@ int main(int, char**)
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL2_Init();
+    ImGui_ImplOpenGL3_Init();
 
     // Setup Style
     ImGui::StyleColorsDark();
@@ -123,7 +124,7 @@ int main(int, char**)
         glfwPollEvents();
 
         // Start the Dear ImGui frame
-        ImGui_ImplOpenGL2_NewFrame();
+        ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
@@ -176,14 +177,14 @@ int main(int, char**)
         myvtk->Render();
 
         //glUseProgram(0); // You may want this if using this code in an OpenGL 3+ context where shaders may be bound, but prefer using the GL3+ code.
-        ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwMakeContextCurrent(window);
         glfwSwapBuffers(window);
     }
 
     // Cleanup
-    ImGui_ImplOpenGL2_Shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
