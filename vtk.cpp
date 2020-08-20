@@ -61,7 +61,6 @@ void MyVTKRenderer::UpdateSize(unsigned int w, unsigned int h)
 	m_Height = h;
 
 	// resize the render window
-	m_renderer->RemoveActor(actor);
 	m_vtkRenderWindow->SetSize(m_Width, m_Height);
 	m_vtkRenderWindow->FullScreenOn();
 	m_vtkRenderWindow->OffScreenRenderingOn();
@@ -69,7 +68,6 @@ void MyVTKRenderer::UpdateSize(unsigned int w, unsigned int h)
 	m_vtkRenderWindow->Modified();
 	m_vtkRenderWindowInteractor->UpdateSize(m_Width, m_Height);
 	m_vtkRenderWindowInteractor->Modified();
-	m_renderer->AddActor(actor);
 	m_IsInited = false;
 
 	// delete old fbo
