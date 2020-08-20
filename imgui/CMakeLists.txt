@@ -1,28 +1,39 @@
-cmake_minimum_required(VERSION 3.6)
-
-if (WIN32)
-    list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
-endif (WIN32)
-
-# glfw
-find_package(glfw3 REQUIRED)
-include_directories(${GLFW3_INCLUDE_DIR})
-link_libraries(${GLFW_LIBRARY_DIRS})
-
-add_library(
-        imgui STATIC
-        imconfig.h
-        imgui.cpp
-        imgui.h
-        imgui_demo.cpp
-        imgui_draw.cpp
-        imgui_impl_glfw.cpp
-        imgui_impl_glfw.h
-        imgui_impl_opengl2.cpp
-        imgui_impl_opengl2.h
-        imgui_internal.h
-        imgui_widgets.cpp
-        imstb_rectpack.h
-        imstb_textedit.h
-        imstb_truetype.h
+set(imgui_headers_sources
+        imgui/imgui.cpp
+        imgui/imgui_widgets.cpp
+        imgui/imgui_draw.cpp
+        imgui/imgui_demo.cpp
+        imgui/examples/imgui_impl_glfw.cpp
+        imgui/examples/imgui_impl_opengl3.cpp
         )
+set(imgui_headers_common
+        imgui/imconfig.h
+        imgui/imgui.h
+        imgui/imgui_internal.h
+        imgui/imstb_rectpack.h
+        imgui/imstb_textedit.h
+        imgui/imstb_truetype.h
+        )
+set(imgui_headers_glfw_opengl
+        imgui/examples/imgui_impl_opengl3.h
+        imgui/examples/imgui_impl_glfw.h
+        )
+
+if (APPLE)
+    find_library(COCOA_LIBRARY Cocoa)
+    find_library(OpenGL_LIBRARY OpenGL)
+    find_library(IOKIT_LIBRARY IOKit)
+    find_library(COREVIDEO_LIBRARY CoreVideo)
+    set(EXTRA_LIBS ${COCOA_LIBRARY} ${OpenGL_LIBRARY} ${IOKIT_LIBRARY} ${COREVIDEO_LIBRARY})
+endif (APPLE)
+# glfw
+# Provide glfw3_DIR
+find_package(glfw3 CONFIG REQUIRED)
+# opengl
+find_package(OpenGL REQUIRED)
+
+add_library(imgui STATIC ${imgui_headers_sources})
+target_link_libraries(imgui glfw)
+target_link_libraries(imgui ${OPENGL_LIBRARIES})
+target_include_directories(imgui PUBLIC "imgui")
+target_include_directories(imgui PUBLIC "imgui/examples")
