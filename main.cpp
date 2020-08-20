@@ -1,12 +1,4 @@
-// dear imgui: standalone example application for GLFW + OpenGL3, using legacy fixed pipeline
-// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
-// (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
-
-// **DO NOT USE THIS CODE IF YOUR CODE/ENGINE IS USING MODERN OPENGL (SHADERS, VBO, VAO, etc.)**
-// **Prefer using the code in the example_glfw_opengl2/ folder**
-// See imgui_impl_glfw.cpp for details.
-
-#include "vtk.h"
+#include "vtkImguiAdapter.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -14,56 +6,56 @@
 #include <GLFW/glfw3.h>
 #include <memory>
 
-std::unique_ptr<MyVTKRenderer> myvtk = nullptr;
+#include <vtkSphereSource.h>
+#include <vtkGenericOpenGLRenderWindow.h>
+#include <vtkGenericRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkCamera.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkActor.h>
+#include <vtkSphereSource.h>
 
-// [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
-// To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma. 
-// Your own project should not be affected, as you are likely to link with a newer binary of GLFW that is adequate for your version of Visual Studio.
-#if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
-#pragma comment(lib, "legacy_stdio_definitions")
-#endif
-
-static void glfw_error_callback(int error, const char* description)
-{
-    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
-}
-
-static void glfw_mouse_wheel(GLFWwindow* window, double xoffset, double yoffset)
-{
-    if (ImGui::IsAnyWindowHovered())
-        return;
-    myvtk->MouseWheelCallback(xoffset, yoffset);
-}
-
-static void glfw_mouse_position(GLFWwindow* window, double xpos, double ypos)
-{
-    if (ImGui::IsAnyWindowHovered())
-        return;
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        bool ctrl = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS;
-        bool shift = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
-        myvtk->MousePositionCallback(xpos, ypos, ctrl, shift);
-    }
-}
-
-void glfw_mouse_button(GLFWwindow* window, int button, int action, int mods)
-{
-    if (ImGui::IsAnyWindowHovered())
-        return;
-    double xpos, ypos;
-    glfwGetCursorPos(window, &xpos, &ypos);
-    myvtk->MouseButtonCallback(xpos, ypos, button, action, mods == GLFW_MOD_CONTROL, mods == GLFW_MOD_SHIFT, false);
-}
 
 int main(int, char**)
 {
-    myvtk = std::unique_ptr<MyVTKRenderer>(new MyVTKRenderer);
+    // Populate the vtkRenderWindow
+    // add the actors to the scene
+    auto sphereSource = vtkSmartPointer<vtkSphereSource>::New();
+    auto mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputConnection(sphereSource->GetOutputPort());
+    auto actor = vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper(mapper);
 
+    // Renderer
+    auto renderWindow = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+    auto renderer = vtkSmartPointer<vtkRenderer>::New();
+    renderer->SetBackground(1, 1, 1);
+    renderWindow->AddRenderer(renderer);
+
+    renderer->AddActor(actor);
+    renderer->GetActiveCamera()->SetPosition(0, 0, 10);
+    renderer->GetActiveCamera()->SetFocalPoint(0, 0, 0);
+    renderer->GetActiveCamera()->SetViewUp(0, 1, 0);
+
+    // Interactor
+    auto renderWindowInteractor = vtkSmartPointer<vtkGenericRenderWindowInteractor>::New();
+    renderWindowInteractor->EnableRenderOff();
+    renderWindow->SetInteractor(renderWindowInteractor);
+
+    // Interactor Style
+    auto style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+    style->SetDefaultRenderer(renderer);
+    style->SetMotionFactor(10.0);
+    renderWindowInteractor->SetInteractorStyle(style);
+
+    auto vtk_imgui_adapter = std::unique_ptr<vtkImguiAdapter>(new vtkImguiAdapter);
     int display_w = 800;
     int display_h = 600;
+    vtk_imgui_adapter->SetRenderWindow(renderWindow);
 
     // Setup window
-    glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
 
@@ -89,9 +81,11 @@ int main(int, char**)
     if (window == NULL)
         return 1;
 
-    glfwSetMouseButtonCallback(window, glfw_mouse_button);
-    glfwSetScrollCallback(window, glfw_mouse_wheel);
-    glfwSetCursorPosCallback(window, glfw_mouse_position);
+    // Associate data to the window. This allow callback functions to be static and use vtk_imgui_adapter
+    glfwSetWindowUserPointer(window, static_cast<void *>(vtk_imgui_adapter.get()));
+    glfwSetMouseButtonCallback(window, vtk_imgui_adapter->glfw_mouse_button);
+    glfwSetScrollCallback(window, vtk_imgui_adapter->glfw_mouse_wheel);
+    glfwSetCursorPosCallback(window, vtk_imgui_adapter->glfw_mouse_position);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
@@ -115,8 +109,8 @@ int main(int, char**)
     ImGui_ImplOpenGL3_Init();
 
     // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them. 
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple. 
+    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
+    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
     // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
     // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
     // - Read 'misc/fonts/README.txt' for more instructions and details.
@@ -163,7 +157,7 @@ int main(int, char**)
             ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
             ImGui::Checkbox("Another Window", &show_another_window);
 
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f    
+            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
             ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
             if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -193,8 +187,8 @@ int main(int, char**)
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        myvtk->UpdateSize(display_w, display_h);
-        myvtk->Render();
+        vtk_imgui_adapter->UpdateSize(display_w, display_h);
+        vtk_imgui_adapter->Render();
 
         //glUseProgram(0); // You may want this if using this code in an OpenGL 3+ context where shaders may be bound, but prefer using the GL3+ code.
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
