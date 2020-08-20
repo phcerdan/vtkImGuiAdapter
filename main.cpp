@@ -30,37 +30,37 @@ static void glfw_error_callback(int error, const char* description)
 
 static void glfw_mouse_wheel(GLFWwindow* window, double xoffset, double yoffset)
 {
-	if (ImGui::IsAnyWindowHovered())
-		return;
-	myvtk->MouseWheelCallback(xoffset, yoffset);
+    if (ImGui::IsAnyWindowHovered())
+        return;
+    myvtk->MouseWheelCallback(xoffset, yoffset);
 }
 
 static void glfw_mouse_position(GLFWwindow* window, double xpos, double ypos)
 {
-	if (ImGui::IsAnyWindowHovered())
-		return;
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		bool ctrl = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS;
-		bool shit = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
-		myvtk->MousePositionCallback(xpos, ypos, ctrl, shit);
-	}
+    if (ImGui::IsAnyWindowHovered())
+        return;
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        bool ctrl = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS;
+        bool shit = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+        myvtk->MousePositionCallback(xpos, ypos, ctrl, shit);
+    }
 }
 
 void glfw_mouse_button(GLFWwindow* window, int button, int action, int mods)
 {
-	if (ImGui::IsAnyWindowHovered())
-		return;
-	double xpos, ypos;
-	glfwGetCursorPos(window, &xpos, &ypos);
-	myvtk->MouseButtonCallback(xpos, ypos, button, action, mods == GLFW_MOD_CONTROL, mods == GLFW_MOD_SHIFT, false);
+    if (ImGui::IsAnyWindowHovered())
+        return;
+    double xpos, ypos;
+    glfwGetCursorPos(window, &xpos, &ypos);
+    myvtk->MouseButtonCallback(xpos, ypos, button, action, mods == GLFW_MOD_CONTROL, mods == GLFW_MOD_SHIFT, false);
 }
 
 int main(int, char**)
 {
-	myvtk = std::unique_ptr<MyVTKRenderer>(new MyVTKRenderer);
+    myvtk = std::unique_ptr<MyVTKRenderer>(new MyVTKRenderer);
 
-	int display_w = 800;
-	int display_h = 600;
+    int display_w = 800;
+    int display_h = 600;
 
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
@@ -89,14 +89,14 @@ int main(int, char**)
     if (window == NULL)
         return 1;
 
-	glfwSetMouseButtonCallback(window, glfw_mouse_button);
-	glfwSetScrollCallback(window, glfw_mouse_wheel);
-	glfwSetCursorPosCallback(window, glfw_mouse_position);
+    glfwSetMouseButtonCallback(window, glfw_mouse_button);
+    glfwSetScrollCallback(window, glfw_mouse_wheel);
+    glfwSetCursorPosCallback(window, glfw_mouse_position);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
-	glewInit();
+    glewInit();
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -193,7 +193,7 @@ int main(int, char**)
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		myvtk->UpdateSize(display_w, display_h);
+        myvtk->UpdateSize(display_w, display_h);
         myvtk->Render();
 
         //glUseProgram(0); // You may want this if using this code in an OpenGL 3+ context where shaders may be bound, but prefer using the GL3+ code.
