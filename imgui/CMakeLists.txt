@@ -18,6 +18,10 @@ set(imgui_headers_glfw_opengl
         imgui/examples/imgui_impl_opengl3.h
         imgui/examples/imgui_impl_glfw.h
         )
+set(imgui_headers_all
+    ${imgui_headers_common}
+    ${imgui_headers_glfw_opengl}
+    )
 
 if (APPLE)
     find_library(COCOA_LIBRARY Cocoa)
@@ -32,8 +36,28 @@ find_package(glfw3 CONFIG REQUIRED)
 # opengl
 find_package(OpenGL REQUIRED)
 
-add_library(imgui STATIC ${imgui_headers_sources})
-target_link_libraries(imgui glfw)
-target_link_libraries(imgui ${OPENGL_LIBRARIES})
-target_include_directories(imgui PUBLIC "imgui")
-target_include_directories(imgui PUBLIC "imgui/examples")
+add_library(imgui-vtk STATIC ${imgui_headers_sources})
+add_library(vtkImguiAdapter::imgui-vtk ALIAS imgui-vtk)
+target_link_libraries(imgui-vtk glfw)
+target_link_libraries(imgui-vtk ${OPENGL_LIBRARIES})
+target_include_directories(imgui-vtk PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imgui>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imgui/examples>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+  )
+
+
+install(TARGETS imgui-vtk
+        EXPORT vtkImguiAdapterTargets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT runtime
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT runtime
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT development
+        )
+
+install(FILES ${imgui_headers_all}
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vtkImguiAdapter)
+
+# export to the build tree
+export( TARGETS imgui-vtk
+  NAMESPACE vtkImguiAdapter::
+  APPEND FILE ${vtkImguiAdapter_export_file})

@@ -1,0 +1,25 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+#### Required dependencies  ####
+find_dependency(VTK COMPONENTS
+  @vtk_components@
+  CONFIG
+  REQUIRED
+  )
+
+find_dependency(glfw3 CONFIG REQUIRED)
+find_dependency(OpenGL REQUIRED)
+
+# if (APPLE)
+#     find_library(COCOA_LIBRARY Cocoa)
+#     find_library(OpenGL_LIBRARY OpenGL)
+#     find_library(IOKIT_LIBRARY IOKit)
+#     find_library(COREVIDEO_LIBRARY CoreVideo)
+# endif (APPLE)
+
+get_filename_component(vtkImguiAdapter_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+if(NOT TARGET vtkImguiAdapter)
+  include ("${vtkImguiAdapter_CMAKE_DIR}/vtkImguiAdapterTargets.cmake")
+endif()
