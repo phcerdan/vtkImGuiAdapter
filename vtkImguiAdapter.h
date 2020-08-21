@@ -27,11 +27,6 @@ public:
 public:
     void SetRenderWindow(vtkGenericOpenGLRenderWindow *renderWindow);
     vtkGenericOpenGLRenderWindow* GetRenderWindow();
-    enum {
-        MOUSE_BUTTON_LEFT = GLFW_MOUSE_BUTTON_1,
-        MOUSE_BUTTON_RIGHT = GLFW_MOUSE_BUTTON_2,
-        MOUSE_BUTTON_MIDDLE= GLFW_MOUSE_BUTTON_3,
-    };
 
 private:
     bool m_IsInitiated;

@@ -11,7 +11,7 @@
 #include <vtkGenericRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
-#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkInteractorStyleSwitch.h>
 #include <vtkCamera.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
@@ -47,9 +47,9 @@ int main(int argc, char**)
     renderWindow->SetInteractor(renderWindowInteractor);
 
     // Interactor Style
-    auto style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+    auto style = vtkSmartPointer<vtkInteractorStyleSwitch>::New();
+    style->SetCurrentStyleToTrackballCamera();
     style->SetDefaultRenderer(renderer);
-    style->SetMotionFactor(10.0);
     renderWindowInteractor->SetInteractorStyle(style);
 
     auto vtk_imgui_adapter = std::unique_ptr<vtkImguiAdapter>(new vtkImguiAdapter);

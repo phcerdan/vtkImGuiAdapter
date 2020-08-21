@@ -133,7 +133,6 @@ void vtkImguiAdapter::UpdateSize(unsigned int w, unsigned int h)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_tex, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_rbo);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 }
 
 void vtkImguiAdapter::Render(void)
@@ -177,14 +176,18 @@ void vtkImguiAdapter::MouseButtonCallback(double xpos, double ypos, int button, 
 {
     m_vtkRenderWindow->GetInteractor()->SetEventInformationFlipY(xpos, ypos, ctrl, shift, dclick);
 
-    if (button == MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
         m_vtkRenderWindow->GetInteractor()->InvokeEvent(vtkCommand::LeftButtonPressEvent, nullptr);
-    if (button == MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
         m_vtkRenderWindow->GetInteractor()->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, nullptr);
-    if (button == MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
         m_vtkRenderWindow->GetInteractor()->InvokeEvent(vtkCommand::RightButtonPressEvent, nullptr);
-    if (button == MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
         m_vtkRenderWindow->GetInteractor()->InvokeEvent(vtkCommand::RightButtonReleaseEvent, nullptr);
+    if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS)
+        m_vtkRenderWindow->GetInteractor()->InvokeEvent(vtkCommand::MiddleButtonPressEvent, nullptr);
+    if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE)
+        m_vtkRenderWindow->GetInteractor()->InvokeEvent(vtkCommand::MiddleButtonReleaseEvent, nullptr);
 }
 
 void vtkImguiAdapter::MousePositionCallback(double xpos, double ypos, bool ctrl, bool shift)
