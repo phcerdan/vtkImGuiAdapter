@@ -1,9 +1,9 @@
 Adapter to add imgui to an existing vtkRenderWindow.
 
 Provides two libraries:
-- `imgui-vtk` using glfw3 and opengl3
+- `imgui-vtk` imgui using common headers and examples using glfw3 and opengl3.
 - `vtkImguiAdapter` that accepts an already populated vtkRenderWindow (with renderer, interactor, and actors)
-and permits mixing it with imgui components. It uses `imgui-vtk`
+and permits mixing it with imgui components. It links to `imgui-vtk`.
 
 The dependencies needed are VTK and glfw3.
 
@@ -12,8 +12,8 @@ The libraries provide a vtkImguiAdapterConfig.cmake in build and install tree to
 ## Build example (bash)
 
 ```bash
-mkdir imgui-vtk; cd imgui-vtk
-git clone --recursive https://github.com/phcerdan/imgui-vtk src
+mkdir vtkImguiAdapter; cd vtkImguiAdapter
+git clone --recursive https://github.com/phcerdan/vtkImguiAdapter src
 mkdir build;
 cmake -GNinja -DCMAKE_BUILD_TYPE=Release ../src
 # Or specify dependencies location
