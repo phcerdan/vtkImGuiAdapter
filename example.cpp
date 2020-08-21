@@ -88,6 +88,8 @@ int main(int argc, char**)
     glfwSetMouseButtonCallback(window, vtk_imgui_adapter->glfw_mouse_button);
     glfwSetScrollCallback(window, vtk_imgui_adapter->glfw_mouse_wheel);
     glfwSetCursorPosCallback(window, vtk_imgui_adapter->glfw_mouse_position);
+    glfwSetWindowSizeCallback(window, vtk_imgui_adapter->glfw_window_size_callback);
+    glfwSetFramebufferSizeCallback(window, vtk_imgui_adapter->glfw_window_size_callback);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync

@@ -22,6 +22,7 @@ public:
     static void glfw_mouse_wheel(GLFWwindow* window, double xoffset, double yoffset);
     static void glfw_mouse_position(GLFWwindow* window, double xpos, double ypos);
     static void glfw_mouse_button(GLFWwindow* window, int button, int action, int mods);
+    static void glfw_window_size_callback(GLFWwindow *window, int width, int height);
 
 public:
     void SetRenderWindow(vtkGenericOpenGLRenderWindow *renderWindow);

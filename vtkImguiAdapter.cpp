@@ -4,6 +4,9 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include <vtkGenericRenderWindowInteractor.h>
+#include <vtkRendererCollection.h>
+#include <vtkMapper.h>
+#include <vtkDataSet.h>
 
 vtkImguiAdapter::vtkImguiAdapter()
     :m_IsInitiated(false)
@@ -61,6 +64,28 @@ void vtkImguiAdapter::glfw_mouse_button(GLFWwindow* window, int button, int acti
     this_->MouseButtonCallback(xpos, ypos, button, action, mods == GLFW_MOD_CONTROL, mods == GLFW_MOD_SHIFT, false);
 }
 
+void vtkImguiAdapter::glfw_window_size_callback(GLFWwindow *window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+    vtkImguiAdapter* this_ = static_cast<vtkImguiAdapter *>(glfwGetWindowUserPointer(window));
+    // Mark all data (all actors from all renderers) as modified to force redraw
+    // in UpdateSize
+    auto * renderer_collection = this_->GetRenderWindow()->GetRenderers();
+    vtkCollectionSimpleIterator rendererIt;
+    vtkRenderer * aRenderer;
+    for (renderer_collection->InitTraversal(rendererIt); (aRenderer = renderer_collection->GetNextRenderer(rendererIt));)
+  {
+      auto * actor_collection = aRenderer->GetActors();
+      vtkCollectionSimpleIterator actorsIt;
+      vtkActor* anActor;
+      for (actor_collection->InitTraversal(actorsIt); (anActor = actor_collection->GetNextActor(actorsIt));)
+      {
+          anActor->GetMapper()->GetInputAsDataSet()->Modified();
+      }
+  }
+    this_->UpdateSize(width, height);
+}
+
 void vtkImguiAdapter::UpdateSize(unsigned int w, unsigned int h)
 {
     if (w == m_WindowWidth && h == m_WindowHeight)
@@ -74,12 +99,10 @@ void vtkImguiAdapter::UpdateSize(unsigned int w, unsigned int h)
 
     // resize the render window
     m_vtkRenderWindow->SetSize(m_WindowWidth, m_WindowHeight);
-    m_vtkRenderWindow->FullScreenOn();
+    // m_vtkRenderWindow->FullScreenOn();
     m_vtkRenderWindow->OffScreenRenderingOn();
     //m_vtkRenderWindow->SetMultiSamples(0);
     m_vtkRenderWindow->Modified();
-    // m_vtkRenderWindow->GetInteractor()->UpdateSize(m_WindowWidth, m_WindowHeight);
-    // m_vtkRenderWindow->GetInteractor()->Modified();
     m_IsInitiated = false;
 
     // delete old fbo
@@ -123,15 +146,15 @@ void vtkImguiAdapter::Render(void)
             m_IsInitiated = true;
         }
 
-        m_vtkRenderWindow->PushState();
+        m_vtkRenderWindow->PushState(); // Does nothing
         m_vtkRenderWindow->OpenGLInitState();
         glUseProgram(0);
         m_vtkRenderWindow->Render();
-        m_vtkRenderWindow->PopState();
+        m_vtkRenderWindow->PopState(); // Does nothing
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    // these has to be called, otherwise imgui 
+    // these has to be called, otherwise imgui
     // wouldn't show up
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
