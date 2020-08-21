@@ -1,4 +1,4 @@
-set(imgui_headers_sources
+set(imgui_sources
         imgui/imgui.cpp
         imgui/imgui_widgets.cpp
         imgui/imgui_draw.cpp
@@ -36,7 +36,7 @@ find_package(glfw3 CONFIG REQUIRED)
 # opengl
 find_package(OpenGL REQUIRED)
 
-add_library(imgui-vtk STATIC ${imgui_headers_sources})
+add_library(imgui-vtk ${imgui_sources})
 add_library(vtkImguiAdapter::imgui-vtk ALIAS imgui-vtk)
 target_link_libraries(imgui-vtk glfw)
 target_link_libraries(imgui-vtk ${OPENGL_LIBRARIES})

@@ -5,6 +5,7 @@ project(vtkImguiAdapter-project
   LANGUAGES CXX C)
 
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 include(GNUInstallDirs) # Define CMAKE_INSTALL_xxx: LIBDIR, INCLUDEDIR
 set(vtkImguiAdapter_export_file "${PROJECT_BINARY_DIR}/vtkImguiAdapterTargets.cmake")
