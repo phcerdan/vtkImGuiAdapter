@@ -18,8 +18,10 @@
 #include <vtkSphereSource.h>
 
 
-int main(int, char**)
+int main(int argc, char**)
 {
+    // Autoclose window (for automated tests)
+    const bool autoclose_window = (argc > 1) ? true : false;
     // Populate the vtkRenderWindow
     // add the actors to the scene
     auto sphereSource = vtkSmartPointer<vtkSphereSource>::New();
@@ -194,6 +196,10 @@ int main(int, char**)
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
+
+        if(autoclose_window) {
+            break;
+        }
     }
 
     // Cleanup
