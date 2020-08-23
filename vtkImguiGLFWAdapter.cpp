@@ -1,4 +1,4 @@
-#include "vtkImguiAdapter.h"
+#include "vtkImguiGLFWAdapter.h"
 #include <vtkGenericOpenGLRenderWindow.h>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -8,7 +8,7 @@
 #include <vtkMapper.h>
 #include <vtkDataSet.h>
 
-vtkImguiAdapter::vtkImguiAdapter()
+vtkImguiGLFWAdapter::vtkImguiGLFWAdapter()
     :m_IsInitiated(false)
     ,m_WindowWidth(0)
     ,m_WindowHeight(0)
@@ -18,56 +18,56 @@ vtkImguiAdapter::vtkImguiAdapter()
     ,m_vtkRenderWindow(nullptr)
 {}
 
-vtkImguiAdapter::~vtkImguiAdapter()
+vtkImguiGLFWAdapter::~vtkImguiGLFWAdapter()
 {
     glDeleteBuffers(1, &m_fbo);
     glDeleteBuffers(1, &m_rbo);
     glDeleteTextures(1, &m_tex);
 }
 
-void vtkImguiAdapter::SetRenderWindow(vtkGenericOpenGLRenderWindow *renderWindow)
+void vtkImguiGLFWAdapter::SetRenderWindow(vtkGenericOpenGLRenderWindow *renderWindow)
 {
     m_vtkRenderWindow = renderWindow;
 }
 
-vtkGenericOpenGLRenderWindow * vtkImguiAdapter::GetRenderWindow()
+vtkGenericOpenGLRenderWindow * vtkImguiGLFWAdapter::GetRenderWindow()
 {
     return m_vtkRenderWindow;
 }
 
-void vtkImguiAdapter::glfw_mouse_wheel(GLFWwindow* window, double xoffset, double yoffset)
+void vtkImguiGLFWAdapter::glfw_mouse_wheel(GLFWwindow* window, double xoffset, double yoffset)
 {
     if (ImGui::IsAnyWindowHovered())
         return;
-    vtkImguiAdapter* this_ = static_cast<vtkImguiAdapter *>(glfwGetWindowUserPointer(window));
+    vtkImguiGLFWAdapter* this_ = static_cast<vtkImguiGLFWAdapter *>(glfwGetWindowUserPointer(window));
     this_->MouseWheelCallback(xoffset, yoffset);
 }
 
-void vtkImguiAdapter::glfw_mouse_position(GLFWwindow* window, double xpos, double ypos)
+void vtkImguiGLFWAdapter::glfw_mouse_position(GLFWwindow* window, double xpos, double ypos)
 {
     if (ImGui::IsAnyWindowHovered())
         return;
-    vtkImguiAdapter* this_ = static_cast<vtkImguiAdapter *>(glfwGetWindowUserPointer(window));
+    vtkImguiGLFWAdapter* this_ = static_cast<vtkImguiGLFWAdapter *>(glfwGetWindowUserPointer(window));
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
         bool ctrl = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS;
         bool shift = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
         this_->MousePositionCallback(xpos, ypos, ctrl, shift);
     }
 }
-void vtkImguiAdapter::glfw_mouse_button(GLFWwindow* window, int button, int action, int mods)
+void vtkImguiGLFWAdapter::glfw_mouse_button(GLFWwindow* window, int button, int action, int mods)
 {
     if (ImGui::IsAnyWindowHovered())
         return;
-    vtkImguiAdapter* this_ = static_cast<vtkImguiAdapter *>(glfwGetWindowUserPointer(window));
+    vtkImguiGLFWAdapter* this_ = static_cast<vtkImguiGLFWAdapter *>(glfwGetWindowUserPointer(window));
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
     this_->MouseButtonCallback(xpos, ypos, button, action, mods == GLFW_MOD_CONTROL, mods == GLFW_MOD_SHIFT, false);
 }
 
-void vtkImguiAdapter::glfw_window_size_callback(GLFWwindow *window, int width, int height)
+void vtkImguiGLFWAdapter::glfw_window_size_callback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
-    vtkImguiAdapter* this_ = static_cast<vtkImguiAdapter *>(glfwGetWindowUserPointer(window));
+    vtkImguiGLFWAdapter* this_ = static_cast<vtkImguiGLFWAdapter *>(glfwGetWindowUserPointer(window));
     // Mark all data (all actors from all renderers) as modified to force redraw
     // in UpdateSize
     auto * renderer_collection = this_->GetRenderWindow()->GetRenderers();
@@ -86,7 +86,7 @@ void vtkImguiAdapter::glfw_window_size_callback(GLFWwindow *window, int width, i
     this_->UpdateSize(width, height);
 }
 
-void vtkImguiAdapter::UpdateSize(unsigned int w, unsigned int h)
+void vtkImguiGLFWAdapter::UpdateSize(unsigned int w, unsigned int h)
 {
     if (w == m_WindowWidth && h == m_WindowHeight)
         return;
@@ -135,7 +135,7 @@ void vtkImguiAdapter::UpdateSize(unsigned int w, unsigned int h)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void vtkImguiAdapter::Render(void)
+void vtkImguiGLFWAdapter::Render(void)
 {
 
     if (m_fbo > 0) {
@@ -172,7 +172,7 @@ void vtkImguiAdapter::Render(void)
     glDisable(GL_TEXTURE_2D);
 }
 
-void vtkImguiAdapter::MouseButtonCallback(double xpos, double ypos, int button, int action, bool ctrl, bool shift, bool dclick)
+void vtkImguiGLFWAdapter::MouseButtonCallback(double xpos, double ypos, int button, int action, bool ctrl, bool shift, bool dclick)
 {
     m_vtkRenderWindow->GetInteractor()->SetEventInformationFlipY(xpos, ypos, ctrl, shift, dclick);
 
@@ -190,13 +190,13 @@ void vtkImguiAdapter::MouseButtonCallback(double xpos, double ypos, int button, 
         m_vtkRenderWindow->GetInteractor()->InvokeEvent(vtkCommand::MiddleButtonReleaseEvent, nullptr);
 }
 
-void vtkImguiAdapter::MousePositionCallback(double xpos, double ypos, bool ctrl, bool shift)
+void vtkImguiGLFWAdapter::MousePositionCallback(double xpos, double ypos, bool ctrl, bool shift)
 {
     m_vtkRenderWindow->GetInteractor()->SetEventInformationFlipY(xpos, ypos, ctrl, shift, 0);
     m_vtkRenderWindow->GetInteractor()->InvokeEvent(vtkCommand::MouseMoveEvent, nullptr);
 }
 
-void vtkImguiAdapter::MouseWheelCallback(double xoffset, double yoffset)
+void vtkImguiGLFWAdapter::MouseWheelCallback(double xoffset, double yoffset)
 {
     if (yoffset > 0)
         m_vtkRenderWindow->GetInteractor()->InvokeEvent(vtkCommand::MouseWheelForwardEvent, nullptr);

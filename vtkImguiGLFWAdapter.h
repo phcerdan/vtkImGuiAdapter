@@ -7,11 +7,11 @@
 
 class vtkGenericOpenGLRenderWindow;
 
-class vtkImguiAdapter
+class vtkImguiGLFWAdapter
 {
 public:
-    vtkImguiAdapter();
-    ~vtkImguiAdapter();
+    vtkImguiGLFWAdapter();
+    ~vtkImguiGLFWAdapter();
     void UpdateSize(unsigned int w, unsigned int h);
     void Render(void);
     void MouseButtonCallback(double xpos, double ypos, int button, int action, bool ctrl, bool shift, bool dclick);

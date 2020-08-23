@@ -1,4 +1,4 @@
-#include "vtkImguiAdapter.h"
+#include "vtkImguiGLFWAdapter.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -52,7 +52,7 @@ int main(int argc, char**)
     style->SetDefaultRenderer(renderer);
     renderWindowInteractor->SetInteractorStyle(style);
 
-    auto vtk_imgui_adapter = std::unique_ptr<vtkImguiAdapter>(new vtkImguiAdapter);
+    auto vtk_imgui_adapter = std::unique_ptr<vtkImguiGLFWAdapter>(new vtkImguiGLFWAdapter);
     int display_w = 800;
     int display_h = 600;
     vtk_imgui_adapter->SetRenderWindow(renderWindow);
