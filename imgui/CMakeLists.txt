@@ -3,8 +3,8 @@ set(imgui_sources
         imgui/imgui_widgets.cpp
         imgui/imgui_draw.cpp
         imgui/imgui_demo.cpp
-        imgui/examples/imgui_impl_glfw.cpp
         imgui/examples/imgui_impl_opengl3.cpp
+        imgui/examples/imgui_impl_sdl.cpp
         )
 set(imgui_headers_common
         imgui/imconfig.h
@@ -14,13 +14,16 @@ set(imgui_headers_common
         imgui/imstb_textedit.h
         imgui/imstb_truetype.h
         )
-set(imgui_headers_glfw_opengl
+set(imgui_headers_opengl
         imgui/examples/imgui_impl_opengl3.h
-        imgui/examples/imgui_impl_glfw.h
+        )
+set(imgui_headers_glfw_sdl
+        imgui/examples/imgui_impl_sdl.h
         )
 set(imgui_headers_all
     ${imgui_headers_common}
-    ${imgui_headers_glfw_opengl}
+    ${imgui_headers_opengl}
+    ${imgui_headers_sdl}
     )
 
 if (APPLE)
@@ -30,16 +33,22 @@ if (APPLE)
     find_library(COREVIDEO_LIBRARY CoreVideo)
     set(EXTRA_LIBS ${COCOA_LIBRARY} ${OpenGL_LIBRARY} ${IOKIT_LIBRARY} ${COREVIDEO_LIBRARY})
 endif (APPLE)
-# glfw
-# Provide glfw3_DIR
-find_package(glfw3 CONFIG REQUIRED)
+
+if(NOT _vtk_supports_sdl2)
+  find_package(SDL2 CONFIG REQUIRED)
+  find_package(GLEW REQUIRED)
+endif()
+
 # opengl
 find_package(OpenGL REQUIRED)
 
 add_library(imgui-vtk ${imgui_sources})
 add_library(vtkImguiAdapter::imgui-vtk ALIAS imgui-vtk)
-target_link_libraries(imgui-vtk glfw)
-target_link_libraries(imgui-vtk ${OPENGL_LIBRARIES})
+target_link_libraries(imgui-vtk PUBLIC OpenGL::GL)
+if(NOT _vtk_supports_sdl2)
+  target_link_libraries(imgui-vtk PUBLIC SDL2::SDL2)
+  target_link_libraries(imgui-vtk PUBLIC GLEW::GLEW)
+endif()
 target_include_directories(imgui-vtk PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imgui>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imgui/examples>
