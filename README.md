@@ -21,8 +21,8 @@ cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ../src -Dglfw3_DIR=/path/to -DVTK_DIR=
 # It accepts building with BUILD_SHARED_LIBS ON or OFF.
 ```
 
-## Screenshot from example.cpp
-![image](https://user-images.githubusercontent.com/3021667/90887214-3b7eb700-e3b4-11ea-929f-ead3e7edb555.png)
+## Screenshot from vtk_sdl2.cpp
+![vtkImguiAdapter_example](https://user-images.githubusercontent.com/3021667/90983593-9c9eba00-e56f-11ea-9145-07088499e1eb.gif)
 
 ## Acknowledgments:
 Improved from work initiated in https://github.com/trlsmax/imgui-vtk
