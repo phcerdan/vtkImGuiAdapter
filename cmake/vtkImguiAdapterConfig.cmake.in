@@ -9,7 +9,10 @@ find_dependency(VTK COMPONENTS
   REQUIRED
   )
 
-find_dependency(glfw3 CONFIG REQUIRED)
+if(NOT @_vtk_supports_sdl2@) # If vkt is not 9 find external dependencies
+  find_dependency(SDL2 CONFIG REQUIRED)
+  find_dependency(GLEW REQUIRED)
+endif()
 find_dependency(OpenGL REQUIRED)
 
 # if (APPLE)

@@ -4,9 +4,6 @@ project(vtkImguiAdapter-project
   VERSION 0.1.0
   LANGUAGES CXX C)
 
-option(vtkImguiAdapter_USE_GLFW "Use imgui glfw" ON)
-option(vtkImguiAdapter_USE_SDL "Use imgui sdl" ON)
-
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 include(GNUInstallDirs) # Define CMAKE_INSTALL_xxx: LIBDIR, INCLUDEDIR
@@ -66,37 +63,21 @@ endif()
 message(STATUS "VTK_LIBRARIES: ${VTK_LIBRARIES}")
 
 
-set(vtkImguiAdapter_headers)
-if(vtkImguiAdapter_USE_SDL)
-  list(APPEND vtkImguiAdapter_headers
+set(vtkImguiAdapter_headers
     vtkImguiSDL2RenderWindowInteractor.h
-        )
-endif()
-if(vtkImguiAdapter_USE_GLFW)
-  list(APPEND vtkImguiAdapter_headers
-    vtkImguiGLFWAdapter.h
-        )
-endif()
-if(NOT _vtk_supports_sdl2 AND vtkImguiAdapter_USE_SDL)
+  )
+if(NOT _vtk_supports_sdl2)
   list(APPEND vtkImguiAdapter_headers
     vtkSDL2OpenGLRenderWindow.h
     vtkSDL2RenderWindowInteractor.h
     )
 endif()
 
-set(vtkImguiAdapter_sources)
-if(vtkImguiAdapter_USE_SDL)
-  list(APPEND vtkImguiAdapter_sources
+set(vtkImguiAdapter_sources
     vtkImguiSDL2RenderWindowInteractor.cxx
-        )
-endif()
-if(vtkImguiAdapter_USE_GLFW)
-  list(APPEND vtkImguiAdapter_sources
-    vtkImguiGLFWAdapter.cpp
-        )
-endif()
+    )
 
-if(NOT _vtk_supports_sdl2 AND vtkImguiAdapter_USE_SDL)
+if(NOT _vtk_supports_sdl2)
   list(APPEND vtkImguiAdapter_sources
       vtkSDL2OpenGLRenderWindow.cxx
       vtkSDL2RenderWindowInteractor.cxx
@@ -111,28 +92,14 @@ target_link_libraries(vtkImguiAdapter PUBLIC
 )
 add_library(vtkImguiAdapter::vtkImguiAdapter ALIAS vtkImguiAdapter)
 
-# GLFW example
-if(vtkImguiAdapter_USE_GLFW)
-  add_executable(example_glfw example.cpp)
-  target_link_libraries(example_glfw vtkImguiAdapter)
-  if(_vtk_is_modern)
-    vtk_module_autoinit(
-      TARGETS example_glfw
-      MODULES ${VTK_LIBRARIES}
-      )
-  endif()
-endif()
-
 # SDL2 example
-if(vtkImguiAdapter_USE_SDL)
-  add_executable(vtk_sdl2 vtk_sdl2.cpp)
-  target_link_libraries(vtk_sdl2 vtkImguiAdapter)
-  if(_vtk_is_modern)
-    vtk_module_autoinit(
-      TARGETS vtk_sdl2
-      MODULES ${VTK_LIBRARIES}
-      )
-  endif()
+add_executable(vtk_sdl2 vtk_sdl2.cpp)
+target_link_libraries(vtk_sdl2 vtkImguiAdapter)
+if(_vtk_is_modern)
+  vtk_module_autoinit(
+    TARGETS vtk_sdl2
+    MODULES ${VTK_LIBRARIES}
+    )
 endif()
 
 install(TARGETS vtkImguiAdapter
