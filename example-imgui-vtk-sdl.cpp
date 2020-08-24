@@ -38,7 +38,6 @@
 
 using ImGuiWindowPositions = std::unordered_map<const char*, ImVec2>;
 inline bool check_window_moved(ImGuiWindowPositions & imgui_win_pos_map, const char * win_name) {
-inline bool check_window_moved(const ImGuiWindowPositions & imgui_win_pos_map, const char * win_name) {
   const auto & old_win_pos = imgui_win_pos_map.at(win_name);
   const auto new_win_pos = ImGui::GetWindowPos();
   if( old_win_pos.x != new_win_pos.x && old_win_pos.y != new_win_pos.y){
