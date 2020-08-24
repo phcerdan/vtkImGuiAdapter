@@ -12,17 +12,18 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkActor.h"
-#include "vtkConeSource.h"
-#include "vtkGlyph3D.h"
-#include "vtkNew.h"
-#include "vtkPolyData.h"
-#include "vtkPolyDataMapper.h"
-#include "vtkRenderer.h"
 #include "vtkSDL2OpenGLRenderWindow.h"
 #include "vtkImguiSDL2RenderWindowInteractor.h"
-#include "vtkInteractorStyleSwitch.h"
-#include "vtkSphereSource.h"
+
+#include <vtkActor.h>
+#include <vtkConeSource.h>
+#include <vtkGlyph3D.h>
+#include <vtkNew.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderer.h>
+#include <vtkInteractorStyleSwitch.h>
+#include <vtkSphereSource.h>
 
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
