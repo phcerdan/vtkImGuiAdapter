@@ -37,14 +37,14 @@
 
 using ImGuiWindowPositions = std::unordered_map<const char*, ImVec2>;
 inline bool check_window_moved(const ImGuiWindowPositions & imgui_win_pos_map, const char * win_name) {
-      const auto & old_win_pos = imgui_win_pos_map.at(win_name);
-      const auto new_win_pos = ImGui::GetWindowPos();
-      if( old_win_pos.x != new_win_pos.x && old_win_pos.y != new_win_pos.y){
-        return true;
-      }
-      else {
-        return false;
-      }
+  const auto & old_win_pos = imgui_win_pos_map.at(win_name);
+  const auto new_win_pos = ImGui::GetWindowPos();
+  if( old_win_pos.x != new_win_pos.x && old_win_pos.y != new_win_pos.y){
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 int main(int, char**)
@@ -130,7 +130,8 @@ int main(int, char**)
       ImGui_ImplSDL2_ProcessEvent(&event);
       if (event.type == SDL_QUIT)
         done = true;
-      if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
+      if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE &&
+          event.window.windowID == SDL_GetWindowID(window))
         done = true;
       renWin->PushContext();
       done = iren->ProcessEvent(&event);
@@ -148,10 +149,10 @@ int main(int, char**)
       static float f = 0.0f;
       static int counter = 0;
 
-      ImGui::Begin(imgui_win_name0);                          // Create a window called "Hello, world!" and append into it.
+      ImGui::Begin(imgui_win_name0);  // Create a window called and append into it.
       imgui_window_moved = check_window_moved(imgui_win_pos_map, imgui_win_name0);
 
-      if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+      if (ImGui::Button("Button"))  // Buttons return true when clicked (most widgets return true when edited/activated)
         counter++;
       ImGui::SameLine();
       ImGui::Text("counter = %d", counter);
