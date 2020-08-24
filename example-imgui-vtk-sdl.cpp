@@ -35,20 +35,6 @@
 #include <GLES3/gl3.h>
 #endif
 
-
-using ImGuiWindowPositions = std::unordered_map<const char*, ImVec2>;
-inline bool check_window_moved(ImGuiWindowPositions & imgui_win_pos_map, const char * win_name) {
-  const auto & old_win_pos = imgui_win_pos_map.at(win_name);
-  const auto new_win_pos = ImGui::GetWindowPos();
-  if( old_win_pos.x != new_win_pos.x && old_win_pos.y != new_win_pos.y){
-    imgui_win_pos_map[win_name] = new_win_pos;
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
 int main(int, char**)
 {
   // VTK side, draw
@@ -112,19 +98,11 @@ int main(int, char**)
 
   // Imgui state
   bool show_demo_window = false;
-  // Track main imgui windows to force a Render() in VTK when moved or resized.
-  // Only needed for imgui windows that border with vtk scene. (Optimization)
-  bool imgui_window_moved = true;
-  ImGuiWindowPositions imgui_win_pos_map;
-  const char * imgui_win_name0 = "Hello imgui-vtk!";
-  imgui_win_pos_map.emplace(imgui_win_name0, ImVec2(32, 32));
   // Main loop
   bool done =  false;
   while (!done)
   {
-    if(imgui_window_moved) {
-      renWin->Render();
-    }
+    renWin->Render();
 
     SDL_Event event;
     while (SDL_PollEvent(&event))
@@ -151,8 +129,7 @@ int main(int, char**)
       static float f = 0.0f;
       static int counter = 0;
 
-      ImGui::Begin(imgui_win_name0);  // Create a window called and append into it.
-      imgui_window_moved = check_window_moved(imgui_win_pos_map, imgui_win_name0);
+      ImGui::Begin("Hello imgui-vtk!"); // Create a window called and append into it.
 
       if (ImGui::Button("Button"))  // Buttons return true when clicked (most widgets return true when edited/activated)
         counter++;
@@ -162,7 +139,6 @@ int main(int, char**)
       bool spike_actor_visible = static_cast<bool>(spikeActor->GetVisibility());
       ImGui::Checkbox("Show spikes", &spike_actor_visible);
       spikeActor->SetVisibility(static_cast<vtkTypeBool>(spike_actor_visible));
-
 
       ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
       ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
