@@ -90,7 +90,7 @@ int main(int, char**)
   renderer->AddActor(sphereActor);
   renderer->AddActor(spikeActor);
   renderer->SetBackground(0.2, 0.3, 0.4);
-  renWin->SetSize(600, 600);
+  renWin->SetSize(800, 800);
 
   iren->Initialize();
 
@@ -108,14 +108,16 @@ int main(int, char**)
   ImGui_ImplSDL2_InitForOpenGL(window, imgui_context);
   ImGui_ImplOpenGL3_Init();
 
-  // Main loop
-  bool done =  false;
-  // Track main imgui windows to force a Render() in VTKwhen moved or resized.
-  // Only needed for imgui windows that border with vtk scene.
+  // Imgui state
+  bool show_demo_window = false;
+  // Track main imgui windows to force a Render() in VTK when moved or resized.
+  // Only needed for imgui windows that border with vtk scene. (Optimization)
   bool imgui_window_moved = true;
   ImGuiWindowPositions imgui_win_pos_map;
   const char * imgui_win_name0 = "Hello imgui-vtk!";
   imgui_win_pos_map.emplace(imgui_win_name0, ImVec2(32, 32));
+  // Main loop
+  bool done =  false;
   while (!done)
   {
     if(imgui_window_moved) {
@@ -138,6 +140,9 @@ int main(int, char**)
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(window);
     ImGui::NewFrame();
+    // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+    if (show_demo_window)
+      ImGui::ShowDemoWindow(&show_demo_window);
     // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
     {
       static float f = 0.0f;
@@ -156,6 +161,7 @@ int main(int, char**)
       spikeActor->SetVisibility(static_cast<vtkTypeBool>(spike_actor_visible));
 
 
+      ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
       ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
       ImGui::End();
     }

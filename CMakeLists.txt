@@ -11,56 +11,31 @@ set(vtkImguiAdapter_export_file "${PROJECT_BINARY_DIR}/vtkImguiAdapterTargets.cm
 
 add_subdirectory(imgui)
 
-find_package(VTK REQUIRED CONFIG)
-message(STATUS "VTK_VERSION: ${VTK_VERSION}")
-if(${VTK_VERSION} VERSION_GREATER_EQUAL "9.0")
-  set(_vtk_is_modern ON)
-else()
-  set(_vtk_is_modern OFF)
-endif()
-
-if(_vtk_is_modern)
-    set(vtk_components
-      CommonCore
-      CommonDataModel
-      RenderingCore
-      RenderingOpenGL2
-      RenderingContextOpenGL2
-      RenderingVolumeOpenGL2
-      InteractionStyle
-      FiltersCore
-      FiltersModeling
-      FiltersSources
-      )
-else()
-  set(vtk_components
-    vtkCommonCore
-    vtkCommonDataModel
-    # avoid AUTOINIT_redefined at build time,
-    vtkRenderingCore
-    vtkRenderingOpenGL2 #  vtkRenderer, vtkRenderWindow not found at run time. Includes SDL2 if VTK_USE_SDL2
-    vtkRenderingContextOpenGL2 # avoid vtkContextDevice2D not found at run time
-    vtkRenderingVolumeOpenGL2 # For volume rendering SmartVolumeMapper
-    vtkInteractionStyle
-    )
-endif()
-
-find_package(VTK REQUIRED COMPONENTS
+set(vtk_components
+  CommonCore
+  CommonDataModel
+  RenderingCore
+  RenderingOpenGL2
+  # RenderingContextOpenGL2
+  RenderingVolumeOpenGL2
+  InteractionStyle
+  FiltersCore
+  FiltersModeling
+  FiltersSources
+  )
+find_package(VTK 9.0 REQUIRED COMPONENTS
         ${vtk_components}
         CONFIG)
-if(NOT _vtk_is_modern)
-  include(${VTK_USE_FILE})
-endif()
-
-if(_vtk_is_modern)
-  if(NOT DEFINED SDL2_FOUND)
-    message(STATUS "VTK hasn't been compiled with SDL2 Support.")
-  endif()
-  if(SDL2_FOUND)
-    set(_vtk_supports_sdl2 ON)
-  endif()
-endif()
+message(STATUS "VTK_VERSION: ${VTK_VERSION}")
 message(STATUS "VTK_LIBRARIES: ${VTK_LIBRARIES}")
+
+if(NOT DEFINED SDL2_FOUND)
+  message(STATUS "- VTK hasn't been compiled with SDL2 Support. Using needed files from this project instead.")
+  message(STATUS "- You can compile VTK with VTK_USE_SDL2=ON")
+endif()
+if(SDL2_FOUND)
+  set(_vtk_supports_sdl2 ON)
+endif()
 
 
 set(vtkImguiAdapter_headers
@@ -93,14 +68,12 @@ target_link_libraries(vtkImguiAdapter PUBLIC
 add_library(vtkImguiAdapter::vtkImguiAdapter ALIAS vtkImguiAdapter)
 
 # SDL2 example
-add_executable(vtk_sdl2 vtk_sdl2.cpp)
-target_link_libraries(vtk_sdl2 vtkImguiAdapter)
-if(_vtk_is_modern)
-  vtk_module_autoinit(
-    TARGETS vtk_sdl2
-    MODULES ${VTK_LIBRARIES}
-    )
-endif()
+add_executable(example-imgui-vtk-sdl example-imgui-vtk-sdl.cpp)
+target_link_libraries(example-imgui-vtk-sdl vtkImguiAdapter)
+vtk_module_autoinit(
+  TARGETS example-imgui-vtk-sdl
+  MODULES ${VTK_LIBRARIES}
+  )
 
 install(TARGETS vtkImguiAdapter
         EXPORT vtkImguiAdapterTargets

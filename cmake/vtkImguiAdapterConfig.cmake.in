@@ -3,13 +3,13 @@
 include(CMakeFindDependencyMacro)
 
 #### Required dependencies  ####
-find_dependency(VTK COMPONENTS
+find_dependency(VTK 9.0 COMPONENTS
   @vtk_components@
   CONFIG
   REQUIRED
   )
 
-if(NOT @_vtk_supports_sdl2@) # If vkt is not 9 find external dependencies
+if(NOT @_vtk_supports_sdl2@) # If vkt doesn't have SDL2 find needed dependencies here
   find_dependency(SDL2 CONFIG REQUIRED)
   find_dependency(GLEW REQUIRED)
 endif()
