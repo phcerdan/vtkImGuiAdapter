@@ -5,7 +5,7 @@ Provides two libraries:
 - `vtkImguiAdapter` that accepts an already populated vtkRenderWindow (with renderer, interactor, and actors)
 and permits mixing it with imgui components. It links to `imgui-vtk`.
 
-The dependencies needed are VTK and OpenGL.
+The dependencies needed are VTK (9.0 at least) and OpenGL.
 If VTK has been compiled with VTK_USE_SDL2, we don't need anything more.
 Otherwise, files needed from VTK SDL2 module will be compiled here, and we will require SDL2 and GLEW as well.
 This is to avoid making you rebuild VTK with VTK_USE_SDL2=ON.
@@ -24,7 +24,7 @@ cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ../src -DVTK_DIR=/path/to
 # It accepts building with BUILD_SHARED_LIBS ON or OFF.
 ```
 
-## Screenshot from vtk_sdl2.cpp
+## Screenshot from example-imgui-vtk-sdl.cpp
 ![vtkImguiAdapter_example](https://user-images.githubusercontent.com/3021667/90983593-9c9eba00-e56f-11ea-9145-07088499e1eb.gif)
 
 ## Acknowledgments:
