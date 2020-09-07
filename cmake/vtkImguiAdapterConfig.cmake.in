@@ -3,6 +3,9 @@
 include(CMakeFindDependencyMacro)
 
 #### Required dependencies  ####
+if(NOT DEFINED VTK_DIR)
+  set(VTK_DIR @VTK_DIR@)
+endif()
 find_dependency(VTK 9.0 COMPONENTS
   @vtk_components@
   CONFIG
@@ -10,8 +13,19 @@ find_dependency(VTK 9.0 COMPONENTS
   )
 
 if(NOT @_vtk_supports_sdl2@) # If vkt doesn't have SDL2 find needed dependencies here
+  if(NOT DEFINED SDL2_DIR)
+    set(SDL2_DIR @SDL2_DIR@)
+  endif()
   find_dependency(SDL2 CONFIG REQUIRED)
+
+  if(NOT DEFINED GLEW_DIR)
+    set(GLEW_DIR @GLEW_DIR@)
+  endif()
   find_dependency(GLEW REQUIRED)
+endif()
+
+if(NOT DEFINED OpenGL_DIR)
+  set(OpenGL_DIR @OpenGL_DIR@)
 endif()
 find_dependency(OpenGL REQUIRED)
 

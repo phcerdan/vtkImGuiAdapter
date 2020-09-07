@@ -33,6 +33,7 @@ if(NOT DEFINED SDL2_FOUND)
   message(STATUS "- VTK hasn't been compiled with SDL2 Support. Using needed files from this project instead.")
   message(STATUS "- You can compile VTK with VTK_USE_SDL2=ON")
 endif()
+set(_vtk_supports_sdl2 OFF)
 if(SDL2_FOUND)
   set(_vtk_supports_sdl2 ON)
 endif()
@@ -66,6 +67,10 @@ target_link_libraries(vtkImguiAdapter PUBLIC
         imgui-vtk
 )
 add_library(vtkImguiAdapter::vtkImguiAdapter ALIAS vtkImguiAdapter)
+target_include_directories(vtkImguiAdapter PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+  )
 
 # SDL2 example
 add_executable(example-imgui-vtk-sdl example-imgui-vtk-sdl.cpp)
