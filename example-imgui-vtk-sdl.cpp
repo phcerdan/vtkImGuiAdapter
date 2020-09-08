@@ -12,7 +12,7 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkSDL2OpenGLRenderWindow.h"
+#include "vtkImguiSDL2OpenGLRenderWindow.h"
 #include "vtkImguiSDL2RenderWindowInteractor.h"
 
 #include <vtkActor.h>
@@ -38,10 +38,8 @@
 int main(int, char**)
 {
   // VTK side, draw
-  // The only different thing is that we need to set DoubleBufferOff in the window and call initialize in the interactor.
   vtkNew<vtkRenderer> renderer;
-  vtkNew<vtkSDL2OpenGLRenderWindow> renWin;
-  renWin->DoubleBufferOff(); // Swap will be handled in the render loop here.
+  vtkNew<vtkImguiSDL2OpenGLRenderWindow> renWin;
   renWin->AddRenderer(renderer);
   vtkNew<vtkImguiSDL2RenderWindowInteractor> iren;
   iren->SetRenderWindow(renWin);

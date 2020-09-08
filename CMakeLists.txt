@@ -41,6 +41,7 @@ endif()
 
 set(vtkImguiAdapter_headers
     vtkImguiSDL2RenderWindowInteractor.h
+    vtkImguiSDL2OpenGLRenderWindow.h
   )
 if(NOT _vtk_supports_sdl2)
   list(APPEND vtkImguiAdapter_headers
@@ -51,6 +52,7 @@ endif()
 
 set(vtkImguiAdapter_sources
     vtkImguiSDL2RenderWindowInteractor.cxx
+    vtkImguiSDL2OpenGLRenderWindow.cxx
     )
 
 if(NOT _vtk_supports_sdl2)
