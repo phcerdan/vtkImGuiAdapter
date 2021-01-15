@@ -1,10 +1,11 @@
 set(imgui_sources
         imgui/imgui.cpp
         imgui/imgui_widgets.cpp
+        imgui/imgui_tables.cpp
         imgui/imgui_draw.cpp
         imgui/imgui_demo.cpp
-        imgui/examples/imgui_impl_opengl3.cpp
-        imgui/examples/imgui_impl_sdl.cpp
+        imgui/backends/imgui_impl_opengl3.cpp
+        imgui/backends/imgui_impl_sdl.cpp
         )
 set(imgui_headers_common
         imgui/imconfig.h
@@ -15,10 +16,10 @@ set(imgui_headers_common
         imgui/imstb_truetype.h
         )
 set(imgui_headers_opengl
-        imgui/examples/imgui_impl_opengl3.h
+        imgui/backends/imgui_impl_opengl3.h
         )
 set(imgui_headers_glfw_sdl
-        imgui/examples/imgui_impl_sdl.h
+        imgui/backends/imgui_impl_sdl.h
         )
 set(imgui_headers_all
     ${imgui_headers_common}
@@ -51,7 +52,7 @@ if(NOT _vtk_supports_sdl2)
 endif()
 target_include_directories(imgui-vtk PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imgui>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imgui/examples>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
 
