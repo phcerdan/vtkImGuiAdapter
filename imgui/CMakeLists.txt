@@ -44,7 +44,7 @@ endif()
 find_package(OpenGL REQUIRED)
 
 add_library(imgui-vtk ${imgui_sources})
-add_library(vtkImguiAdapter::imgui-vtk ALIAS imgui-vtk)
+add_library(vtkImGuiAdapter::imgui-vtk ALIAS imgui-vtk)
 target_link_libraries(imgui-vtk PUBLIC OpenGL::GL)
 if(NOT _vtk_supports_sdl2)
   target_link_libraries(imgui-vtk PUBLIC SDL2::SDL2)
@@ -58,16 +58,16 @@ target_include_directories(imgui-vtk PUBLIC
 
 
 install(TARGETS imgui-vtk
-        EXPORT vtkImguiAdapterTargets
+        EXPORT vtkImGuiAdapterTargets
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT runtime
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT runtime
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT development
         )
 
 install(FILES ${imgui_headers_all}
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vtkImguiAdapter)
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vtkImGuiAdapter)
 
 # export to the build tree
 export( TARGETS imgui-vtk
-  NAMESPACE vtkImguiAdapter::
-  APPEND FILE ${vtkImguiAdapter_export_file})
+  NAMESPACE vtkImGuiAdapter::
+  APPEND FILE ${vtkImGuiAdapter_export_file})

@@ -12,8 +12,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkImguiSDL2OpenGLRenderWindow.h"
-#include "vtkImguiSDL2RenderWindowInteractor.h"
+#include "vtkImGuiSDL2OpenGLRenderWindow.h"
+#include "vtkImGuiSDL2RenderWindowInteractor.h"
 
 #include <vtkActor.h>
 #include <vtkConeSource.h>
@@ -39,9 +39,9 @@ int main(int, char**)
 {
   // VTK side, draw
   vtkNew<vtkRenderer> renderer;
-  vtkNew<vtkImguiSDL2OpenGLRenderWindow> renWin;
+  vtkNew<vtkImGuiSDL2OpenGLRenderWindow> renWin;
   renWin->AddRenderer(renderer);
-  vtkNew<vtkImguiSDL2RenderWindowInteractor> iren;
+  vtkNew<vtkImGuiSDL2RenderWindowInteractor> iren;
   iren->SetRenderWindow(renWin);
 
   vtkNew<vtkInteractorStyleSwitch> style;

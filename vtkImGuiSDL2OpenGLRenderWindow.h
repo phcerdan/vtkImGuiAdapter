@@ -4,19 +4,19 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /**
- * @class   vtkImguiSDL2OpenGLRenderWindow
+ * @class   vtkImGuiSDL2OpenGLRenderWindow
  * @brief   implements SDL2 specific functions to render with Imgui
  *
  */
 
-#ifndef vtkImguiSDL2OpenGLRenderWindow_h
-#define vtkImguiSDL2OpenGLRenderWindow_h
+#ifndef vtkImGuiSDL2OpenGLRenderWindow_h
+#define vtkImGuiSDL2OpenGLRenderWindow_h
 
 #include "vtkSDL2OpenGLRenderWindow.h"
 
 #include "vtkRenderingUIModule.h" // For export macro
 
-class VTKRENDERINGUI_EXPORT vtkImguiSDL2OpenGLRenderWindow : public vtkSDL2OpenGLRenderWindow
+class VTKRENDERINGUI_EXPORT vtkImGuiSDL2OpenGLRenderWindow : public vtkSDL2OpenGLRenderWindow
 {
 public:
   /** Inherit constructors from base class */
@@ -25,9 +25,9 @@ public:
   /**
    * Construct object so that light follows camera motion.
    */
-  static vtkImguiSDL2OpenGLRenderWindow* New();
+  static vtkImGuiSDL2OpenGLRenderWindow* New();
 
-  vtkTypeMacro(vtkImguiSDL2OpenGLRenderWindow, vtkSDL2OpenGLRenderWindow);
+  vtkTypeMacro(vtkImGuiSDL2OpenGLRenderWindow, vtkSDL2OpenGLRenderWindow);
 
   /**
    * Override to avoid calling

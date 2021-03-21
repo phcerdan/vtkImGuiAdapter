@@ -8,23 +8,23 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "vtkImguiSDL2RenderWindowInteractor.h"
+#include "vtkImGuiSDL2RenderWindowInteractor.h"
 #include "vtkObjectFactory.h"
 #include <SDL.h>
 
-vtkStandardNewMacro(vtkImguiSDL2RenderWindowInteractor);
+vtkStandardNewMacro(vtkImGuiSDL2RenderWindowInteractor);
 
 //------------------------------------------------------------------------------
-void vtkImguiSDL2RenderWindowInteractor::PrintSelf(ostream& os, vtkIndent indent)
+void vtkImGuiSDL2RenderWindowInteractor::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
   os << indent << "StartedMessageLoop: " << this->StartedMessageLoop << endl;
 }
 
-bool vtkImguiSDL2RenderWindowInteractor::ProcessEvent(void* arg)
+bool vtkImGuiSDL2RenderWindowInteractor::ProcessEvent(void* arg)
 {
   if(!imguiIO) {
-    throw std::runtime_error(" vtkImguiSDL2RenderWindowInteractor: SetImguiIO before processing events");
+    throw std::runtime_error(" vtkImGuiSDL2RenderWindowInteractor: SetImguiIO before processing events");
   }
 
   SDL_Event* event = reinterpret_cast<SDL_Event*>(arg);

@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(vtkImguiAdapter-project
+project(vtkImGuiAdapter-project
   VERSION 0.1.0
   LANGUAGES CXX C)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 include(GNUInstallDirs) # Define CMAKE_INSTALL_xxx: LIBDIR, INCLUDEDIR
-set(vtkImguiAdapter_export_file "${PROJECT_BINARY_DIR}/vtkImguiAdapterTargets.cmake")
+set(vtkImGuiAdapter_export_file "${PROJECT_BINARY_DIR}/vtkImGuiAdapterTargets.cmake")
 
 add_subdirectory(imgui)
 
@@ -39,107 +39,107 @@ if(SDL2_FOUND)
 endif()
 
 
-set(vtkImguiAdapter_headers
-    vtkImguiSDL2RenderWindowInteractor.h
-    vtkImguiSDL2OpenGLRenderWindow.h
+set(vtkImGuiAdapter_headers
+    vtkImGuiSDL2RenderWindowInteractor.h
+    vtkImGuiSDL2OpenGLRenderWindow.h
   )
 if(NOT _vtk_supports_sdl2)
-  list(APPEND vtkImguiAdapter_headers
+  list(APPEND vtkImGuiAdapter_headers
     vtkSDL2OpenGLRenderWindow.h
     vtkSDL2RenderWindowInteractor.h
     )
 endif()
 
-set(vtkImguiAdapter_sources
-    vtkImguiSDL2RenderWindowInteractor.cxx
-    vtkImguiSDL2OpenGLRenderWindow.cxx
+set(vtkImGuiAdapter_sources
+    vtkImGuiSDL2RenderWindowInteractor.cxx
+    vtkImGuiSDL2OpenGLRenderWindow.cxx
     )
 
 if(NOT _vtk_supports_sdl2)
-  list(APPEND vtkImguiAdapter_sources
+  list(APPEND vtkImGuiAdapter_sources
       vtkSDL2OpenGLRenderWindow.cxx
       vtkSDL2RenderWindowInteractor.cxx
       )
 endif()
 
-add_library(vtkImguiAdapter ${vtkImguiAdapter_sources})
-target_link_libraries(vtkImguiAdapter PUBLIC
+add_library(vtkImGuiAdapter ${vtkImGuiAdapter_sources})
+target_link_libraries(vtkImGuiAdapter PUBLIC
         ${EXTRA_LIBS}
         ${VTK_LIBRARIES}
         imgui-vtk
 )
-add_library(vtkImguiAdapter::vtkImguiAdapter ALIAS vtkImguiAdapter)
-target_include_directories(vtkImguiAdapter PUBLIC
+add_library(vtkImGuiAdapter::vtkImGuiAdapter ALIAS vtkImGuiAdapter)
+target_include_directories(vtkImGuiAdapter PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
 
 # SDL2 example
 add_executable(example-imgui-vtk-sdl example-imgui-vtk-sdl.cpp)
-target_link_libraries(example-imgui-vtk-sdl vtkImguiAdapter)
+target_link_libraries(example-imgui-vtk-sdl vtkImGuiAdapter)
 vtk_module_autoinit(
   TARGETS example-imgui-vtk-sdl
   MODULES ${VTK_LIBRARIES}
   )
 
-install(TARGETS vtkImguiAdapter
-        EXPORT vtkImguiAdapterTargets
+install(TARGETS vtkImGuiAdapter
+        EXPORT vtkImGuiAdapterTargets
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT runtime
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT runtime
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT development
         )
 
-install(FILES ${vtkImguiAdapter_headers}
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vtkImguiAdapter)
+install(FILES ${vtkImGuiAdapter_headers}
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vtkImGuiAdapter)
 
 # export to the build tree
-export( TARGETS vtkImguiAdapter
-  NAMESPACE vtkImguiAdapter::
-  APPEND FILE ${vtkImguiAdapter_export_file})
+export( TARGETS vtkImGuiAdapter
+  NAMESPACE vtkImGuiAdapter::
+  APPEND FILE ${vtkImGuiAdapter_export_file})
 
 # INSTALL
-set(install_cmake_dir "${CMAKE_INSTALL_LIBDIR}/cmake/vtkImguiAdapter")
+set(install_cmake_dir "${CMAKE_INSTALL_LIBDIR}/cmake/vtkImGuiAdapter")
 
-install (EXPORT vtkImguiAdapterTargets
-  NAMESPACE vtkImguiAdapter::
+install (EXPORT vtkImGuiAdapterTargets
+  NAMESPACE vtkImGuiAdapter::
   DESTINATION ${install_cmake_dir} )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/vtkImguiAdapterConfig.cmake
-              ${CMAKE_CURRENT_BINARY_DIR}/vtkImguiAdapterConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/vtkImGuiAdapterConfig.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/vtkImGuiAdapterConfigVersion.cmake
               DESTINATION ${install_cmake_dir} )
 
 include(CMakePackageConfigHelpers)
 
-write_basic_package_version_file(vtkImguiAdapterConfigVersion.cmake
-  VERSION ${vtkImguiAdapter_VERSION}
+write_basic_package_version_file(vtkImGuiAdapterConfigVersion.cmake
+  VERSION ${vtkImGuiAdapter_VERSION}
   COMPATIBILITY SameMajorVersion)
 
 # Build tree
-set(vtkImguiAdapter_targets_file ${vtkImguiAdapter_export_file})
+set(vtkImGuiAdapter_targets_file ${vtkImGuiAdapter_export_file})
 configure_package_config_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/vtkImguiAdapterConfig.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/vtkImguiAdapterConfig.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/vtkImGuiAdapterConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/vtkImGuiAdapterConfig.cmake
   INSTALL_DESTINATION ${install_cmake_dir}
-  PATH_VARS vtkImguiAdapter_targets_file
-  NO_CHECK_REQUIRED_COMPONENTS_MACRO # vtkImguiAdapter does not provide components
+  PATH_VARS vtkImGuiAdapter_targets_file
+  NO_CHECK_REQUIRED_COMPONENTS_MACRO # vtkImGuiAdapter does not provide components
   INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR}
   )
 
 # Install tree
-set(vtkImguiAdapter_targets_file ${CMAKE_INSTALL_PREFIX}/${install_cmake_dir}/vtkImguiAdapterTargets.cmake)
+set(vtkImGuiAdapter_targets_file ${CMAKE_INSTALL_PREFIX}/${install_cmake_dir}/vtkImGuiAdapterTargets.cmake)
 configure_package_config_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/vtkImguiAdapterConfig.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/cmake/vtkImguiAdapterConfig.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/vtkImGuiAdapterConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/vtkImGuiAdapterConfig.cmake
   INSTALL_DESTINATION ${install_cmake_dir}
-  PATH_VARS vtkImguiAdapter_targets_file
-  NO_CHECK_REQUIRED_COMPONENTS_MACRO # vtkImguiAdapter does not provide components
+  PATH_VARS vtkImGuiAdapter_targets_file
+  NO_CHECK_REQUIRED_COMPONENTS_MACRO # vtkImGuiAdapter does not provide components
   )
 
 # Add custom target to only install component: runtime (libraries)
-add_custom_target(vtkImguiAdapter-install-runtime
+add_custom_target(vtkImGuiAdapter-install-runtime
   ${CMAKE_COMMAND}
   -DCMAKE_INSTALL_COMPONENT=runtime
   -P "${PROJECT_BINARY_DIR}/cmake_install.cmake"
   DEPENDS ${SG_LIBRARIES}
   )
-add_dependencies(vtkImguiAdapter-install-runtime vtkImguiAdapter)
+add_dependencies(vtkImGuiAdapter-install-runtime vtkImGuiAdapter)

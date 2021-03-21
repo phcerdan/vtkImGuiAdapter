@@ -4,20 +4,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /**
- * @class   vtkImguiSDL2RenderWindowInteractor
+ * @class   vtkImGuiSDL2RenderWindowInteractor
  * @brief   implements SDL2 specific functions to render with Imgui
  *
  */
 
-#ifndef vtkImguiSDL2RenderWindowInteractor_h
-#define vtkImguiSDL2RenderWindowInteractor_h
+#ifndef vtkImGuiSDL2RenderWindowInteractor_h
+#define vtkImGuiSDL2RenderWindowInteractor_h
 
 #include "vtkSDL2RenderWindowInteractor.h"
 
 #include "vtkRenderingUIModule.h" // For export macro
 #include "imgui.h"
 
-class VTKRENDERINGUI_EXPORT vtkImguiSDL2RenderWindowInteractor : public vtkSDL2RenderWindowInteractor
+class VTKRENDERINGUI_EXPORT vtkImGuiSDL2RenderWindowInteractor : public vtkSDL2RenderWindowInteractor
 {
 public:
   /** Inherit constructors from base class */
@@ -26,9 +26,9 @@ public:
   /**
    * Construct object so that light follows camera motion.
    */
-  static vtkImguiSDL2RenderWindowInteractor* New();
+  static vtkImGuiSDL2RenderWindowInteractor* New();
 
-  vtkTypeMacro(vtkImguiSDL2RenderWindowInteractor, vtkRenderWindowInteractor);
+  vtkTypeMacro(vtkImGuiSDL2RenderWindowInteractor, vtkRenderWindowInteractor);
   void PrintSelf(ostream& os, vtkIndent indent) override;
   inline void SetImguiIO(ImGuiIO * io) {imguiIO = io;};
   inline ImGuiIO * GetImguiIO() {return imguiIO;};
