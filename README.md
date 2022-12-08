@@ -17,7 +17,7 @@ The libraries provide a vtkImGuiAdapterConfig.cmake in build and install tree to
 ```bash
 mkdir vtkImGuiAdapter; cd vtkImGuiAdapter
 git clone --recursive https://github.com/phcerdan/vtkImGuiAdapter src
-mkdir build;
+mkdir build; cd build
 cmake -GNinja -DCMAKE_BUILD_TYPE=Release ../src
 # Or specify dependencies location
 cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ../src -DVTK_DIR=/path/to
